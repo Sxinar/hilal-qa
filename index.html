@@ -26,6 +26,7 @@
         }
     </script>
     <style>
+        /* Giscus yükleniyor animasyonu için minimalist bir spinner */
         .loader {
             border: 2px solid #30363d;
             border-top: 2px solid var(--accent-color, #58a6ff);
@@ -35,9 +36,12 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Akıcı kaydırma efekti */
+        html { scroll-behavior: smooth; }
     </style>
 </head>
-<body class="bg-dev-bg text-dev-text antialiased max-w-[1250px] mx-auto px-6 py-8 tracking-tight font-mono relative">
+<body class="bg-dev-bg text-dev-text antialiased max-w-[1250px] mx-auto px-6 py-8 tracking-tight font-mono">
 
     <header class="flex items-center justify-between border-b border-dev-border pb-5 mb-8">
         <div class="flex items-center gap-3">
@@ -45,51 +49,25 @@
             <span class="text-dev-white text-lg font-semibold tracking-normal font-sans">Hilal Browser / dev-center</span>
         </div>
         
-        <div class="flex items-center gap-4 font-sans relative">
-            <a href="https://github.com/VastSea0/hilal-browser" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-2 border border-dev-border px-3 py-1 rounded bg-dev-panel hover:bg-dev-surface hover:text-dev-white transition-colors text-xs">
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8 0 3.54-2.29 6.53-5.47 7.59-.4.07-.55-.17-.55-.38 0-.19.01-.82.01-1.49 2.01.37 2.53-.49 2.69-.94.09-.23.48-.94.82-1.13.28-.15.68-.52.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-                <span>VastSea0/hilal-browser</span>
-                <span class="text-dev-muted font-mono text-[10px] bg-dev-bg px-1 rounded border border-dev-border">v1.0.0</span>
-            </a>
-
-            <div id="auth-container" class="relative">
-                <div id="auth-zone"></div>
-                
-                <div id="stats-popup" class="hidden absolute right-0 mt-2 w-64 bg-dev-panel border border-dev-border rounded-md shadow-2xl z-50 p-4 animate-in fade-in slide-in-from-top-1 duration-150">
-                    <div class="text-[11px] font-bold text-dev-muted uppercase tracking-wider border-b border-dev-border pb-2 mb-3">
-                        Geliştirici Profil Özeti
-                    </div>
-                    <div class="space-y-2.5 text-xs">
-                        <div class="flex justify-between items-center">
-                            <span class="text-dev-muted">Katkılar (Commits)</span>
-                            <span class="text-dev-white font-semibold font-mono">142</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-dev-muted">Açılan Sorunlar (Issues)</span>
-                            <span class="text-dev-white font-semibold font-mono">12</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-dev-muted">Yama İncelemeleri</span>
-                            <span class="text-dev-white font-semibold font-mono">34</span>
-                        </div>
-                        <div class="border-t border-dev-border pt-2.5 mt-1 flex justify-between items-center text-[11px]">
-                            <span class="text-dev-muted">Rol</span>
-                            <span class="text-sky-400 font-mono bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">Core Dev</span>
-                        </div>
-                    </div>
+        <div class="flex items-center gap-3 font-sans">
+            <div id="auth-zone">
                 </div>
-            </div>
+            
+            <a href="https://github.com/VastSea0/hilal-browser" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 border border-dev-border hover:border-dev-muted px-2.5 py-0.5 rounded bg-dev-panel hover:bg-dev-surface text-[11px] text-dev-white transition-colors decoration-none font-mono">
+                <svg class="w-3.5 h-3.5 fill-current text-dev-muted" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8 0 3.54-2.29 6.53-5.47 7.59-.4.07-.55-.17-.55-.38 0-.19.01-.82.01-1.49 2.01.37 2.53-.49 2.69-.94.09-.23.48-.94.82-1.13.28-.15.68-.52.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                <span>GitHub</span>
+            </a>
         </div>
     </header>
 
     <div class="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8 items-start">
-        
+
         <nav class="space-y-6 md:sticky md:top-6 select-none font-sans">
             <div>
                 <div class="text-[11px] font-bold text-dev-muted uppercase tracking-wider px-3 mb-2">Workspace</div>
                 <div class="space-y-0.5" id="workspace-menu"></div>
             </div>
-            
+
             <div>
                 <div class="text-[11px] font-bold text-dev-muted uppercase tracking-wider px-3 mb-2">Feedback</div>
                 <div class="space-y-0.5" id="feedback-menu"></div>
@@ -118,14 +96,13 @@
     </div>
 
     <script>
-        // --- DİNAMİK AUTH YAPISI (GISCUS ENTEGRASYONU) ---
+        // --- DİNAMİK OTURUM DURUMU YÖNETİMİ ---
         let userState = {
             isLoggedIn: false,
-            username: '',
-            avatar: ''
+            username: ''
         };
 
-        // Giscus iframe'inden gelen oturum sinyallerini dinleyen event listener
+        // Giscus iframe'inden gelen oturum verilerini yakalayan olay dinleyici
         window.addEventListener('message', (event) => {
             if (event.origin !== 'https://giscus.app') return;
             
@@ -133,48 +110,77 @@
             if (data && data.giscus && data.giscus.viewer) {
                 const viewer = data.giscus.viewer;
                 
-                // Giscus'ta aktif oturum varsa bilgileri f5'siz çek
                 userState.isLoggedIn = true;
                 userState.username = viewer.login;
-                userState.avatar = viewer.avatarUrl;
                 
-                renderAuth();
+                renderAuthUI();
             }
         });
 
-        // Kategori Veri Kümesi
+        // Üst bar arayüzünü güncelleyen fonksiyon
+        function renderAuthUI() {
+            const authZone = document.getElementById('auth-zone');
+            
+            if (userState.isLoggedIn) {
+                // Giriş yapılmışsa: Kullanıcı adını içeren kutucuk
+                authZone.innerHTML = `
+                    <div class="flex items-center border border-dev-border px-2.5 py-0.5 rounded bg-dev-surface text-[11px] font-medium text-dev-white font-mono select-none">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+                        ${userState.username}
+                    </div>
+                `;
+            } else {
+                // Giriş yapılmamışsa: Giriş alanına pürüzsüz kaydıran buton
+                authZone.innerHTML = `
+                    <button onclick="scrollToLogin()" class="inline-flex items-center gap-1.5 border border-dev-border hover:border-dev-muted px-2.5 py-0.5 rounded bg-dev-panel hover:bg-dev-surface text-[11px] text-dev-white transition-colors font-sans cursor-pointer">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-0.5"></span>
+                        <span>Oturum Aç</span>
+                    </button>
+                `;
+            }
+        }
+
+        // Kullanıcıyı aşağıdaki gerçek Giscus giriş alanına kaydıran fonksiyon
+        function scrollToLogin() {
+            const forumBox = document.getElementById('giscus-forum-kutusu');
+            if (forumBox) {
+                forumBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Kategori Veri Kümesi (Düz renkler, temiz metinler)
         const kategoriBilgileri = {
-            'patch-manager': { 
-                baslik: 'Yama Yöneticisi', 
+            'patch-manager': {
+                baslik: 'Yama Yöneticisi',
                 badge: 'hil',
                 group: 'workspace',
                 detay: 'Rust tabanlı patch yöneticisi mimarisi, manifest.toml validasyon kuralları ve core operations (setup, apply, refresh) süreçleri.',
                 term: 'hilal-browser-patch-manager-hil',
-                color: '#38bdf8'
+                color: '#38bdf8' // Sky 400
             },
-            'upstream-engine': { 
-                baslik: 'Firefox Tabanı', 
+            'upstream-engine': {
+                baslik: 'Firefox Tabanı',
                 badge: 'core',
                 group: 'workspace',
                 detay: 'Upstream Firefox kod tabanı senkronizasyonu, upstream.lock kilit mekanizmaları, mach komut dizilimleri ve motor optimizasyonları.',
                 term: 'hilal-browser-upstream-engine-firefox',
-                color: '#f97316'
+                color: '#f97316' // Orange 500
             },
-            'changes-overlays': { 
-                baslik: 'Değişiklikler & Katmanlar', 
+            'changes-overlays': {
+                baslik: 'Değişiklikler & Katmanlar',
                 badge: 'changes/',
                 group: 'workspace',
                 detay: 'Firefox kaynak ağacını aynalayan *.patch entegrasyonları, özelleştirilmiş branding yapılandırması ve kullanıcı tercihleri.',
                 term: 'hilal-browser-changes-overlays',
-                color: '#a855f7'
+                color: '#a855f7' // Purple 500
             },
-            'build-release': { 
-                baslik: 'Derleme & Dağıtım', 
+            'build-release': {
+                baslik: 'Derleme & Dağıtım',
                 badge: 'scripts/',
                 group: 'workspace',
                 detay: 'macOS (sh) ve Windows (ps1) derleme mimarileri, paketleme otomasyonları, CI/CD süreçleri ve sürüm yönetimi.',
                 term: 'hilal-browser-build-release-pipeline',
-                color: '#22c55e'
+                color: '#22c55e' // Green 500
             },
             'issues': {
                 baslik: 'Sorunlar & Hatalar',
@@ -182,7 +188,7 @@
                 group: 'feedback',
                 detay: 'Derleme süreçlerinde, yamaların enjeksiyonunda veya runtime esnasında karşılaşılan hata ve istisnaların takibi.',
                 term: 'hilal-browser-community-issues',
-                color: '#ef4444'
+                color: '#ef4444' // Red 500
             },
             'suggestions': {
                 baslik: 'Öneriler & Fikirler',
@@ -190,60 +196,29 @@
                 group: 'feedback',
                 detay: 'Tarayıcı kabiliyetlerini artıracak yeni özellik önerileri ve yama yönetim motoruna dair optimizasyon fikirleri.',
                 term: 'hilal-browser-community-suggestions',
-                color: '#eab308'
+                color: '#eab308' // Yellow 500
             }
         };
 
+        // DOM Elementleri
         const workspaceMenu = document.getElementById('workspace-menu');
         const feedbackMenu = document.getElementById('feedback-menu');
         const accentLine = document.getElementById('accent-line');
         const loadingIndicator = document.getElementById('giscus-loading-indicator');
-        const authZone = document.getElementById('auth-zone');
-        const statsPopup = document.getElementById('stats-popup');
 
-        // Auth Alanı Arayüz Yönetimi
-        function renderAuth() {
-            if (userState.isLoggedIn) {
-                authZone.innerHTML = `
-                    <button id="profile-trigger" class="flex items-center gap-2.5 border border-dev-border pl-2.5 pr-1 py-1 rounded bg-dev-panel hover:bg-dev-surface transition-colors cursor-pointer select-none">
-                        <span class="text-xs font-medium text-dev-white font-mono">${userState.username}</span>
-                        <img src="${userState.avatar}" alt="Profil" class="w-6 h-6 rounded border border-dev-border object-cover">
-                    </button>
-                `;
-
-                document.getElementById('profile-trigger').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    statsPopup.classList.toggle('hidden');
-                });
-            } else {
-                authZone.innerHTML = `
-                    <a href="#giscus-forum-kutusu" class="flex items-center gap-2 bg-[#24292e] text-white hover:bg-[#2c3137] border border-dev-border px-3 py-1 rounded text-xs transition-colors font-medium text-none decoration-none">
-                        <svg class="w-4 h-4 fill-current" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8 0 3.54-2.29 6.53-5.47 7.59-.4.07-.55-.17-.55-.38 0-.19.01-.82.01-1.49 2.01.37 2.53-.49 2.69-.94.09-.23.48-.94.82-1.13.28-.15.68-.52.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-                        <span>Tartışmaya Katıl</span>
-                    </a>
-                `;
-            }
-        }
-
-        // Dropdown dışına tıklandığında pop-up kapatma
-        document.addEventListener('click', (e) => {
-            if (!statsPopup.contains(e.target) && e.target.id !== 'profile-trigger') {
-                statsPopup.classList.add('hidden');
-            }
-        });
-
-        // Menü Yapılandırması
+        // Menüyü Dinamik Oluşturma
         function menuRender() {
             workspaceMenu.innerHTML = '';
             feedbackMenu.innerHTML = '';
-            
+
             Object.keys(kategoriBilgileri).forEach(key => {
                 const item = kategoriBilgileri[key];
                 const link = document.createElement('a');
                 link.href = `?kategori=${key}`;
                 link.className = `group flex items-center justify-between px-3 py-2 rounded text-xs transition-all duration-150 cursor-pointer text-dev-muted hover:bg-dev-surface hover:text-dev-white`;
                 link.id = `link-${key}`;
-                
+
+                // SPA Tıklama Etkinliği
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     window.history.pushState(null, '', link.href);
@@ -258,31 +233,34 @@
             });
         }
 
-        // Kategori Senkronizasyonu (SPA - F5'siz Alan)
+        // Kategori Değiştirme Fonksiyonu
         function switchCategory(kategoriKey) {
             let key = kategoriBilgileri[kategoriKey] ? kategoriKey : 'patch-manager';
             const data = kategoriBilgileri[key];
 
+            // Aktif Sınıfları Temizle ve Yeni Olana Ekle
             document.querySelectorAll('nav a').forEach(el => {
                 el.classList.remove('bg-dev-surface', 'text-dev-white', 'font-medium', 'border-l-2');
                 el.style.borderLeftColor = 'transparent';
             });
-            
+
             const activeLink = document.getElementById(`link-${key}`);
             if(activeLink) {
                 activeLink.classList.add('bg-dev-surface', 'text-dev-white', 'font-medium');
                 activeLink.style.borderLeft = `2px solid ${data.color}`;
             }
 
+            // Arayüzü Güncelle
             document.getElementById('kategoriBaslik').innerText = data.baslik;
             document.getElementById('kategoriDetay').innerText = data.detay;
             accentLine.style.backgroundColor = data.color;
             document.documentElement.style.setProperty('--accent-color', data.color);
 
+            // Giscus'ı Yeniden Yükle
             reloadGiscus(data.term);
         }
 
-        // Giscus Reload Core
+        // Giscus Güncelleyici (SPA Uyumlu)
         function reloadGiscus(term) {
             const container = document.getElementById('giscus-forum-kutusu');
             container.innerHTML = '';
@@ -294,7 +272,7 @@
             script.setAttribute("data-repo-id", "R_kgDOSxZJ7g");
             script.setAttribute("data-category-id", "DIC_kwDOSxZJ7s4C_GO8");
             script.setAttribute("data-mapping", "specific");
-            script.setAttribute("data-term", term); 
+            script.setAttribute("data-term", term);
             script.setAttribute("data-strict", "0");
             script.setAttribute("data-reactions-enabled", "1");
             script.setAttribute("data-emit-metadata", "0");
@@ -311,13 +289,14 @@
             container.appendChild(script);
         }
 
+        // Tarayıcı Geri/İleri Buton Desteği
         window.addEventListener('popstate', () => {
             const params = new URLSearchParams(window.location.search);
             switchCategory(params.get('kategori'));
         });
 
-        // Bootstrap
-        renderAuth();
+        // İlk Yükleme Hatları
+        renderAuthUI();
         menuRender();
         const initialParams = new URLSearchParams(window.location.search);
         switchCategory(initialParams.get('kategori'));
