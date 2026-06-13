@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Hilal Browser | Geliştirici Tartışma Platformu</title>
+    <link rel="icon" type="image/png" href="https://hilal.gkdevstudio.org/default128.png">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -32,12 +33,14 @@
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        h1::before {
-            content: "🌙";
-            font-size: 22px;
+        /* Başlıktaki logo alanı */
+        .brand-logo {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
         }
 
         .forum-container {
@@ -57,10 +60,14 @@
         .sidebar h3 {
             color: #768390;
             font-size: 11px;
-            margin-top: 0;
+            margin-top: 15px;
             margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .sidebar h3:first-child {
+            margin-top: 0;
         }
         
         .kategori-link {
@@ -119,17 +126,15 @@
             }
             .sidebar {
                 display: flex;
-                flex-wrap: wrap;
+                flex-direction: column;
                 gap: 5px;
                 padding: 10px;
             }
             .sidebar h3 {
-                width: 100%;
-                margin-bottom: 8px;
+                margin-top: 10px;
+                margin-bottom: 5px;
             }
             .kategori-link {
-                display: inline-block;
-                margin-bottom: 0;
                 font-size: 13px;
                 padding: 6px 10px;
             }
@@ -142,7 +147,10 @@
 <body>
 
     <header>
-        <h1>Hilal Browser Geliştirici Alanı</h1>
+        <h1>
+            <img src="https://hilal.gkdevstudio.org/default128.png" alt="Hilal Browser Logo" class="brand-logo">
+            Hilal Browser Geliştirici Alanı
+        </h1>
     </header>
 
     <div class="forum-container">
@@ -153,6 +161,10 @@
             <a href="?kategori=upstream-engine" class="kategori-link" id="cat-upstream-engine">Firefox Tabanı (engine)</a>
             <a href="?kategori=changes-overlays" class="kategori-link" id="cat-changes-overlays">Değişiklikler & Katmanlar</a>
             <a href="?kategori=build-release" class="kategori-link" id="cat-build-release">Derleme & Dağıtım</a>
+            
+            <h3>Topluluk & Geribildirim</h3>
+            <a href="?kategori=issues" class="kategori-link" id="cat-issues">🐛 Sorunlar & Hatalar</a>
+            <a href="?kategori=suggestions" class="kategori-link" id="cat-suggestions">💡 Öneriler & Fikirler</a>
         </aside>
 
         <main class="main-content">
@@ -170,6 +182,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         let aktifKategori = urlParams.get('kategori') || 'patch-manager';
 
+        // Genişletilmiş ve güncellenmiş kategori haritası
         const kategoriBilgileri = {
             'patch-manager': { 
                 baslik: 'Yama Yöneticisi (hil)', 
@@ -190,6 +203,16 @@
                 baslik: 'Derleme & Dağıtım (scripts/)', 
                 detay: 'macOS (sh) ve Windows (ps1) derleme betikleri, paketleme otomasyonları, CI/CD süreçleri ve changelog yönetimi.',
                 term: 'hilal-browser-build-release-pipeline'
+            },
+            'issues': {
+                baslik: '🐛 Sorunlar & Hatalar',
+                detay: 'Hilal Browser derleme süreçlerinde, yamaların uygulanmasında veya tarayıcı çalışma zamanında karşılaştığınız bug/hata bildirimleri.',
+                term: 'hilal-browser-community-issues'
+            },
+            'suggestions': {
+                baslik: '💡 Öneriler & Fikirler',
+                detay: 'Tarayıcıya eklenmesini istediğiniz yeni özellikler, yama yönetim aracı (hil) için iyileştirmeler ve inovatif fikir havuzu.',
+                term: 'hilal-browser-community-suggestions'
             }
         };
 
@@ -199,28 +222,26 @@
         document.getElementById('kategoriDetay').innerText = kategoriBilgileri[aktifKategori].detay;
         document.getElementById(`cat-${aktifKategori}`).classList.add('active');
 
-        // Eski giscus yüklemesini sıfırla
+        // Eski giscus yüklemesini temizle
         const giscusKutusu = document.getElementById('giscus-forum-kutusu');
         giscusKutusu.innerHTML = '';
 
-        // Yeni dinamik Giscus script elementini oluştur
+        // Yeni dinamik Giscus script bileşeni
         const script = document.createElement('script');
         script.src = "https://giscus.app/client.js";
         
-        // Gönderdiğin güncel repo ve kategori ID bilgileri uygulandı
         script.setAttribute("data-repo", "Sxinar/hilal-browser");
         script.setAttribute("data-repo-id", "R_kgDOSxZJ7g");
         script.setAttribute("data-category-id", "DIC_kwDOSxZJ7s4C_GO8");
         
-        // Çakışmayı önlemek için her çalışma alanına tamamen benzersiz anahtarlar atandı
         script.setAttribute("data-mapping", "specific");
         script.setAttribute("data-term", kategoriBilgileri[aktifKategori].term); 
         
         script.setAttribute("data-strict", "0");
         script.setAttribute("data-reactions-enabled", "1");
         script.setAttribute("data-emit-metadata", "0");
-        script.setAttribute("data-input-position", "top"); // Girdi kutusu üstte olacak şekilde ayarlandı
-        script.setAttribute("data-theme", "dark_dimmed");   // Arayüzle uyumlu GitHub koyu teması
+        script.setAttribute("data-input-position", "top");
+        script.setAttribute("data-theme", "dark_dimmed");
         script.setAttribute("data-lang", "tr");
         script.crossOrigin = "anonymous";
         script.async = true;
