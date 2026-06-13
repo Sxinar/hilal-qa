@@ -39,27 +39,22 @@
 </head>
 <body class="bg-dev-bg text-dev-text antialiased max-w-[1250px] mx-auto px-6 py-8 tracking-tight font-mono relative">
 
-    <!-- Header -->
     <header class="flex items-center justify-between border-b border-dev-border pb-5 mb-8">
         <div class="flex items-center gap-3">
             <img src="https://hilal.gkdevstudio.org/default128.png" alt="Logo" class="w-7 h-7 object-contain opacity-90">
             <span class="text-dev-white text-lg font-semibold tracking-normal font-sans">Hilal Browser / dev-center</span>
         </div>
         
-        <!-- Sağ Üst: Repo Bilgisi & Auth Durumu -->
         <div class="flex items-center gap-4 font-sans relative">
-            <!-- GitHub Repo Link & Sürüm -->
             <a href="https://github.com/VastSea0/hilal-browser" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-2 border border-dev-border px-3 py-1 rounded bg-dev-panel hover:bg-dev-surface hover:text-dev-white transition-colors text-xs">
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8 0 3.54-2.29 6.53-5.47 7.59-.4.07-.55-.17-.55-.38 0-.19.01-.82.01-1.49 2.01.37 2.53-.49 2.69-.94.09-.23.48-.94.82-1.13.28-.15.68-.52.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
                 <span>VastSea0/hilal-browser</span>
                 <span class="text-dev-muted font-mono text-[10px] bg-dev-bg px-1 rounded border border-dev-border">v1.0.0</span>
             </a>
 
-            <!-- Auth Alanı & Açılır Menü Konteyneri -->
             <div id="auth-container" class="relative">
                 <div id="auth-zone"></div>
                 
-                <!-- Sağdaki Kutucuğa Basınca Açılan İstatistik Pop-up'ı -->
                 <div id="stats-popup" class="hidden absolute right-0 mt-2 w-64 bg-dev-panel border border-dev-border rounded-md shadow-2xl z-50 p-4 animate-in fade-in slide-in-from-top-1 duration-150">
                     <div class="text-[11px] font-bold text-dev-muted uppercase tracking-wider border-b border-dev-border pb-2 mb-3">
                         Geliştirici Profil Özeti
@@ -87,10 +82,8 @@
         </div>
     </header>
 
-    <!-- App Container -->
     <div class="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8 items-start">
         
-        <!-- Sidebar -->
         <nav class="space-y-6 md:sticky md:top-6 select-none font-sans">
             <div>
                 <div class="text-[11px] font-bold text-dev-muted uppercase tracking-wider px-3 mb-2">Workspace</div>
@@ -103,7 +96,6 @@
             </div>
         </nav>
 
-        <!-- Main Workspace -->
         <main class="bg-dev-panel border border-dev-border rounded-lg shadow-xl relative min-w-0 transition-all duration-200">
             <div id="accent-line" class="absolute left-0 top-0 bottom-0 w-[3px] transition-colors duration-300"></div>
 
@@ -113,7 +105,6 @@
                     <p id="kategoriDetay" class="text-dev-muted text-xs leading-relaxed max-w-3xl font-sans"></p>
                 </div>
 
-                <!-- Giscus Arena -->
                 <div id="giscus-wrapper" class="relative min-h-[350px]">
                     <div id="giscus-loading-indicator" class="absolute inset-0 flex flex-col items-center justify-center bg-dev-panel gap-3 text-xs text-dev-muted font-sans z-10">
                         <div class="loader"></div>
@@ -127,12 +118,29 @@
     </div>
 
     <script>
-        // Auth State (Kutucuğu aktifleştirir)
-        const userState = {
-            isLoggedIn: true, 
-            username: 'Sxinar',
-            avatar: 'https://github.com/VastSea0.png' // Belirttiğiniz yeni organizasyon/kullanıcı pp'si
+        // --- DİNAMİK AUTH YAPISI (GISCUS ENTEGRASYONU) ---
+        let userState = {
+            isLoggedIn: false,
+            username: '',
+            avatar: ''
         };
+
+        // Giscus iframe'inden gelen oturum sinyallerini dinleyen event listener
+        window.addEventListener('message', (event) => {
+            if (event.origin !== 'https://giscus.app') return;
+            
+            const data = event.data;
+            if (data && data.giscus && data.giscus.viewer) {
+                const viewer = data.giscus.viewer;
+                
+                // Giscus'ta aktif oturum varsa bilgileri f5'siz çek
+                userState.isLoggedIn = true;
+                userState.username = viewer.login;
+                userState.avatar = viewer.avatarUrl;
+                
+                renderAuth();
+            }
+        });
 
         // Kategori Veri Kümesi
         const kategoriBilgileri = {
@@ -193,7 +201,7 @@
         const authZone = document.getElementById('auth-zone');
         const statsPopup = document.getElementById('stats-popup');
 
-        // Auth & Pop-up Tetikleyici Yapı
+        // Auth Alanı Arayüz Yönetimi
         function renderAuth() {
             if (userState.isLoggedIn) {
                 authZone.innerHTML = `
@@ -203,22 +211,21 @@
                     </button>
                 `;
 
-                // Tıklanınca istatistik pop-up panelini aç/kapat
                 document.getElementById('profile-trigger').addEventListener('click', (e) => {
                     e.stopPropagation();
                     statsPopup.classList.toggle('hidden');
                 });
             } else {
                 authZone.innerHTML = `
-                    <button onclick="alert('OAuth login')" class="flex items-center gap-2 bg-[#24292e] text-white hover:bg-[#2c3137] border border-dev-border px-3 py-1 rounded text-xs transition-colors font-medium">
+                    <a href="#giscus-forum-kutusu" class="flex items-center gap-2 bg-[#24292e] text-white hover:bg-[#2c3137] border border-dev-border px-3 py-1 rounded text-xs transition-colors font-medium text-none decoration-none">
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8 0 3.54-2.29 6.53-5.47 7.59-.4.07-.55-.17-.55-.38 0-.19.01-.82.01-1.49 2.01.37 2.53-.49 2.69-.94.09-.23.48-.94.82-1.13.28-.15.68-.52.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-                        <span>GitHub ile Giriş Yap</span>
-                    </button>
+                        <span>Tartışmaya Katıl</span>
+                    </a>
                 `;
             }
         }
 
-        // Pop-up dışına tıklandığında otomatik kapatma kontrolü
+        // Dropdown dışına tıklandığında pop-up kapatma
         document.addEventListener('click', (e) => {
             if (!statsPopup.contains(e.target) && e.target.id !== 'profile-trigger') {
                 statsPopup.classList.add('hidden');
@@ -251,7 +258,7 @@
             });
         }
 
-        // Kategori Senkronizasyonu (SPA)
+        // Kategori Senkronizasyonu (SPA - F5'siz Alan)
         function switchCategory(kategoriKey) {
             let key = kategoriBilgileri[kategoriKey] ? kategoriKey : 'patch-manager';
             const data = kategoriBilgileri[key];
@@ -275,7 +282,7 @@
             reloadGiscus(data.term);
         }
 
-        // Giscus Güncelleyici
+        // Giscus Reload Core
         function reloadGiscus(term) {
             const container = document.getElementById('giscus-forum-kutusu');
             container.innerHTML = '';
