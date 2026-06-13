@@ -37,7 +37,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-dev-bg text-dev-text antialiased max-w-[1250px] mx-auto px-6 py-8 tracking-tight font-mono">
+<body class="bg-dev-bg text-dev-text antialiased max-w-[1250px] mx-auto px-6 py-8 tracking-tight font-mono relative">
 
     <!-- Header -->
     <header class="flex items-center justify-between border-b border-dev-border pb-5 mb-8">
@@ -47,16 +47,43 @@
         </div>
         
         <!-- Sağ Üst: Repo Bilgisi & Auth Durumu -->
-        <div class="flex items-center gap-4 font-sans">
+        <div class="flex items-center gap-4 font-sans relative">
             <!-- GitHub Repo Link & Sürüm -->
-            <a href="https://github.com/Sxinar/hilal-browser" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-2 border border-dev-border px-3 py-1 rounded bg-dev-panel hover:bg-dev-surface hover:text-dev-white transition-colors text-xs">
+            <a href="https://github.com/VastSea0/hilal-browser" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-2 border border-dev-border px-3 py-1 rounded bg-dev-panel hover:bg-dev-surface hover:text-dev-white transition-colors text-xs">
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8 0 3.54-2.29 6.53-5.47 7.59-.4.07-.55-.17-.55-.38 0-.19.01-.82.01-1.49 2.01.37 2.53-.49 2.69-.94.09-.23.48-.94.82-1.13.28-.15.68-.52.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-                <span>Sxinar/hilal-browser</span>
+                <span>VastSea0/hilal-browser</span>
                 <span class="text-dev-muted font-mono text-[10px] bg-dev-bg px-1 rounded border border-dev-border">v1.0.0</span>
             </a>
 
-            <!-- Auth Alanı (JS kontrol ediyor) -->
-            <div id="auth-zone"></div>
+            <!-- Auth Alanı & Açılır Menü Konteyneri -->
+            <div id="auth-container" class="relative">
+                <div id="auth-zone"></div>
+                
+                <!-- Sağdaki Kutucuğa Basınca Açılan İstatistik Pop-up'ı -->
+                <div id="stats-popup" class="hidden absolute right-0 mt-2 w-64 bg-dev-panel border border-dev-border rounded-md shadow-2xl z-50 p-4 animate-in fade-in slide-in-from-top-1 duration-150">
+                    <div class="text-[11px] font-bold text-dev-muted uppercase tracking-wider border-b border-dev-border pb-2 mb-3">
+                        Geliştirici Profil Özeti
+                    </div>
+                    <div class="space-y-2.5 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-dev-muted">Katkılar (Commits)</span>
+                            <span class="text-dev-white font-semibold font-mono">142</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-dev-muted">Açılan Sorunlar (Issues)</span>
+                            <span class="text-dev-white font-semibold font-mono">12</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-dev-muted">Yama İncelemeleri</span>
+                            <span class="text-dev-white font-semibold font-mono">34</span>
+                        </div>
+                        <div class="border-t border-dev-border pt-2.5 mt-1 flex justify-between items-center text-[11px]">
+                            <span class="text-dev-muted">Rol</span>
+                            <span class="text-sky-400 font-mono bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">Core Dev</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -100,12 +127,11 @@
     </div>
 
     <script>
-        // --- AUTH CONFIGURATION (SİMÜLASYON) ---
-        // Gerçek bir OAuth entegrasyonunda bu bilgileri localstorage veya session'dan çekersin.
+        // Auth State (Kutucuğu aktifleştirir)
         const userState = {
-            isLoggedIn: true, // Giriş ekranını test etmek için 'false' yapabilirsin
+            isLoggedIn: true, 
             username: 'Sxinar',
-            avatar: 'https://github.com/Sxinar.png' // GitHub profil resmini çeker
+            avatar: 'https://github.com/VastSea0.png' // Belirttiğiniz yeni organizasyon/kullanıcı pp'si
         };
 
         // Kategori Veri Kümesi
@@ -165,21 +191,26 @@
         const accentLine = document.getElementById('accent-line');
         const loadingIndicator = document.getElementById('giscus-loading-indicator');
         const authZone = document.getElementById('auth-zone');
+        const statsPopup = document.getElementById('stats-popup');
 
-        // Auth Alanı Arayüz Yönetimi
+        // Auth & Pop-up Tetikleyici Yapı
         function renderAuth() {
             if (userState.isLoggedIn) {
-                // Giriş Yapılmışsa: Profil Fotoğrafı ve Minimalist Bilgi Kutusu
                 authZone.innerHTML = `
-                    <div class="flex items-center gap-2.5 border border-dev-border pl-2.5 pr-1 py-1 rounded bg-dev-panel">
+                    <button id="profile-trigger" class="flex items-center gap-2.5 border border-dev-border pl-2.5 pr-1 py-1 rounded bg-dev-panel hover:bg-dev-surface transition-colors cursor-pointer select-none">
                         <span class="text-xs font-medium text-dev-white font-mono">${userState.username}</span>
                         <img src="${userState.avatar}" alt="Profil" class="w-6 h-6 rounded border border-dev-border object-cover">
-                    </div>
+                    </button>
                 `;
+
+                // Tıklanınca istatistik pop-up panelini aç/kapat
+                document.getElementById('profile-trigger').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    statsPopup.classList.toggle('hidden');
+                });
             } else {
-                // Giriş Yapılmamışsa: Temiz GitHub Butonu
                 authZone.innerHTML = `
-                    <button onclick="alert('OAuth login tetiklendi')" class="flex items-center gap-2 bg-[#24292e] text-white hover:bg-[#2c3137] border border-dev-border px-3 py-1 rounded text-xs transition-colors font-medium">
+                    <button onclick="alert('OAuth login')" class="flex items-center gap-2 bg-[#24292e] text-white hover:bg-[#2c3137] border border-dev-border px-3 py-1 rounded text-xs transition-colors font-medium">
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8 0 3.54-2.29 6.53-5.47 7.59-.4.07-.55-.17-.55-.38 0-.19.01-.82.01-1.49 2.01.37 2.53-.49 2.69-.94.09-.23.48-.94.82-1.13.28-.15.68-.52.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
                         <span>GitHub ile Giriş Yap</span>
                     </button>
@@ -187,7 +218,14 @@
             }
         }
 
-        // Menü Oluşturma
+        // Pop-up dışına tıklandığında otomatik kapatma kontrolü
+        document.addEventListener('click', (e) => {
+            if (!statsPopup.contains(e.target) && e.target.id !== 'profile-trigger') {
+                statsPopup.classList.add('hidden');
+            }
+        });
+
+        // Menü Yapılandırması
         function menuRender() {
             workspaceMenu.innerHTML = '';
             feedbackMenu.innerHTML = '';
@@ -213,7 +251,7 @@
             });
         }
 
-        // Kategori Değiştirici (SPA)
+        // Kategori Senkronizasyonu (SPA)
         function switchCategory(kategoriKey) {
             let key = kategoriBilgileri[kategoriKey] ? kategoriKey : 'patch-manager';
             const data = kategoriBilgileri[key];
@@ -237,7 +275,7 @@
             reloadGiscus(data.term);
         }
 
-        // Giscus Reload Core
+        // Giscus Güncelleyici
         function reloadGiscus(term) {
             const container = document.getElementById('giscus-forum-kutusu');
             container.innerHTML = '';
@@ -271,7 +309,7 @@
             switchCategory(params.get('kategori'));
         });
 
-        // Init
+        // Bootstrap
         renderAuth();
         menuRender();
         const initialParams = new URLSearchParams(window.location.search);
