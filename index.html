@@ -6,140 +6,228 @@
     <title>Hilal Browser | Geliştirici Tartışma Platformu</title>
     <link rel="icon" type="image/png" href="https://hilal.gkdevstudio.org/default128.png">
     <style>
+        :root {
+            --bg-main: #0d1117;
+            --bg-card: #161b22;
+            --bg-sidebar: #0d1117;
+            --border-color: #30363d;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --text-title: #f0f6fc;
+            --accent-color: #58a6ff; /* Dinamik olarak değişecek */
+            --accent-glow: rgba(88, 166, 255, 0.15);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            max-width: 1100px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #22272e;
-            color: #adbac7;
+            padding: 40px 20px;
+            background-color: var(--bg-main);
+            color: var(--text-main);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            letter-spacing: -0.01em;
         }
         
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #444c56;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
         }
         
         h1 { 
-            color: #f0f6fc; 
+            color: var(--text-title); 
             margin: 0; 
-            font-size: 24px; 
+            font-size: 22px; 
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        /* Başlıktaki logo alanı */
         .brand-logo {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
         }
 
         .forum-container {
             display: grid;
             grid-template-columns: 280px 1fr;
-            gap: 20px;
+            gap: 32px;
+            align-items: start;
         }
 
+        /* Sidebar Geliştirmeleri */
         .sidebar {
-            background: #1c2128;
-            border: 1px solid #444c56;
-            border-radius: 6px;
-            padding: 15px;
-            height: fit-content;
+            background: var(--bg-sidebar);
+            position: sticky;
+            top: 20px;
         }
         
-        .sidebar h3 {
-            color: #768390;
-            font-size: 11px;
-            margin-top: 15px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .sidebar-section {
+            margin-bottom: 28px;
         }
 
-        .sidebar h3:first-child {
+        .sidebar h3 {
+            color: var(--text-muted);
+            font-size: 11px;
             margin-top: 0;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
         }
         
         .kategori-link {
-            display: block;
-            color: #539bf5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-main);
             text-decoration: none;
-            padding: 8px 10px;
-            border-radius: 4px;
+            padding: 10px 14px;
+            border-radius: 8px;
             font-size: 14px;
-            margin-bottom: 5px;
+            font-weight: 500;
+            margin-bottom: 6px;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
-            transition: background 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
         }
         
-        .kategori-link:hover, .kategori-link.active {
-            background-color: #22272e;
-            color: #f0f6fc;
+        .kategori-link:hover {
+            background-color: var(--bg-card);
+            color: var(--text-title);
+            transform: translateX(2px);
         }
 
+        /* Aktif kategoriye özel soft glow ve sol çizgi efekti */
+        .kategori-link.active {
+            background-color: var(--bg-card);
+            color: var(--text-title);
+            border-color: var(--border-color);
+            box-shadow: inset 4px 0 0 0 var(--accent-color), 0 4px 12px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+
+        .kategori-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #21262d;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        /* Ana İçerik Alanı (Kart Tasarımı) */
         .main-content {
-            background: #1c2128;
-            border: 1px solid #444c56;
-            border-radius: 6px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
             min-width: 0;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Kategori değiştikçe parlayacak üst border çizgisi */
+        .main-content::before {
+            content: '';
+            display: block;
+            height: 3px;
+            width: 100%;
+            background: var(--accent-color);
+            margin-top: -32px;
+            margin-left: -32px;
+            padding-right: 64px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            transition: background 0.3s ease;
         }
 
         .forum-header-info {
-            border-bottom: 1px solid #444c56;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            padding-top: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 24px;
+            margin-bottom: 28px;
         }
         
         .forum-header-info h2 { 
-            margin: 0 0 8px 0; 
-            color: #f0f6fc; 
-            font-size: 20px; 
+            margin: 0 0 10px 0; 
+            color: var(--text-title); 
+            font-size: 24px; 
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .forum-header-info p { 
             margin: 0; 
-            color: #768390; 
+            color: var(--text-muted); 
             font-size: 14px; 
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
+        /* Yükleniyor Belirteci */
+        #giscus-forum-kutusu {
+            min-height: 300px;
+            position: relative;
+        }
+
+        #giscus-forum-kutusu.loading::after {
+            content: "Tartışmalar yükleniyor...";
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Mobil Uyumluluk */
         @media (max-width: 768px) {
             body {
-                padding: 12px;
+                padding: 16px;
+            }
+            header {
+                padding-bottom: 16px;
+                margin-bottom: 20px;
+            }
+            h1 {
+                font-size: 18px;
             }
             .forum-container {
                 grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 20px;
             }
             .sidebar {
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-                padding: 10px;
+                position: static;
             }
-            .sidebar h3 {
-                margin-top: 10px;
-                margin-bottom: 5px;
+            .sidebar-section {
+                margin-bottom: 16px;
             }
             .kategori-link {
                 font-size: 13px;
-                padding: 6px 10px;
+                padding: 8px 12px;
             }
             .main-content {
-                padding: 16px;
+                padding: 20px;
+            }
+            .main-content::before {
+                margin-top: -20px;
+                margin-left: -20px;
+                padding-right: 40px;
+            }
+            .forum-header-info h2 {
+                font-size: 20px;
             }
         }
     </style>
@@ -156,15 +244,35 @@
     <div class="forum-container">
         
         <aside class="sidebar">
-            <h3>Çalışma Alanları (Workspace)</h3>
-            <a href="?kategori=patch-manager" class="kategori-link" id="cat-patch-manager">Yama Yöneticisi (hil)</a>
-            <a href="?kategori=upstream-engine" class="kategori-link" id="cat-upstream-engine">Firefox Tabanı (engine)</a>
-            <a href="?kategori=changes-overlays" class="kategori-link" id="cat-changes-overlays">Değişiklikler & Katmanlar</a>
-            <a href="?kategori=build-release" class="kategori-link" id="cat-build-release">Derleme & Dağıtım</a>
+            <div class="sidebar-section">
+                <h3>Çalışma Alanları</h3>
+                <a href="?kategori=patch-manager" class="kategori-link" id="cat-patch-manager">
+                    <span>🛠️ Yama Yöneticisi</span>
+                    <span class="kategori-badge">hil</span>
+                </a>
+                <a href="?kategori=upstream-engine" class="kategori-link" id="cat-upstream-engine">
+                    <span>🔥 Firefox Tabanı</span>
+                    <span class="kategori-badge">core</span>
+                </a>
+                <a href="?kategori=changes-overlays" class="kategori-link" id="cat-changes-overlays">
+                    <span>💎 Değişiklikler & Katmanlar</span>
+                    <span class="kategori-badge">src</span>
+                </a>
+                <a href="?kategori=build-release" class="kategori-link" id="cat-build-release">
+                    <span>🚀 Derleme & Dağıtım</span>
+                    <span class="kategori-badge">ci</span>
+                </a>
+            </div>
             
-            <h3>Topluluk & Geribildirim</h3>
-            <a href="?kategori=issues" class="kategori-link" id="cat-issues">🐛 Sorunlar & Hatalar</a>
-            <a href="?kategori=suggestions" class="kategori-link" id="cat-suggestions">💡 Öneriler & Fikirler</a>
+            <div class="sidebar-section">
+                <h3>Topluluk & Geribildirim</h3>
+                <a href="?kategori=issues" class="kategori-link" id="cat-issues">
+                    <span>🐛 Sorunlar & Hatalar</span>
+                </a>
+                <a href="?kategori=suggestions" class="kategori-link" id="cat-suggestions">
+                    <span>💡 Öneriler & Fikirler</span>
+                </a>
+            </div>
         </aside>
 
         <main class="main-content">
@@ -173,7 +281,7 @@
                 <p id="kategoriDetay">Rust ile geliştirilen patch yöneticisinin mimarisi, manifest.toml kuralları ve core operations (setup, apply, refresh) süreçleri.</p>
             </div>
 
-            <div id="giscus-forum-kutusu"></div>
+            <div id="giscus-forum-kutusu" class="loading"></div>
         </main>
 
     </div>
@@ -182,61 +290,70 @@
         const urlParams = new URLSearchParams(window.location.search);
         let aktifKategori = urlParams.get('kategori') || 'patch-manager';
 
-        // Genişletilmiş ve güncellenmiş kategori haritası
+        // Her kategoriye özel dinamik renkler (Hex) ve detaylar ekledik
         const kategoriBilgileri = {
             'patch-manager': { 
-                baslik: 'Yama Yöneticisi (hil)', 
+                baslik: '🛠️ Yama Yöneticisi (hil)', 
                 detay: 'Rust ile geliştirilen patch yöneticisinin mimarisi, manifest.toml kuralları ve core operations (setup, apply, refresh) süreçleri.',
-                term: 'hilal-browser-patch-manager-hil'
+                term: 'hilal-browser-patch-manager-hil',
+                color: '#ff9800' // Turuncu vurgu
             },
             'upstream-engine': { 
-                baslik: 'Firefox Tabanı (engine)', 
+                baslik: '🔥 Firefox Tabanı (engine)', 
                 detay: 'Upstream Firefox kod tabanı, upstream.lock kilit mekanizmaları, mach komutları ve yerel motor optimizasyonları.',
-                term: 'hilal-browser-upstream-engine-firefox'
+                term: 'hilal-browser-upstream-engine-firefox',
+                color: '#ff5722' // Firefox Turuncusu/Kırmızı
             },
             'changes-overlays': { 
-                baslik: 'Değişiklikler & Katmanlar (changes/)', 
+                baslik: '💎 Değişiklikler & Katmanlar (changes/)', 
                 detay: 'Firefox kaynak ağacını aynalayan *.patch dosyaları, özelleştirilmiş branding, yerelleştirme (locales) ve kullanıcı tercihleri (preferences).',
-                term: 'hilal-browser-changes-overlays'
+                term: 'hilal-browser-changes-overlays',
+                color: '#00bcd4' // Turkuaz/Mavi
             },
             'build-release': { 
-                baslik: 'Derleme & Dağıtım (scripts/)', 
+                baslik: '🚀 Derleme & Dağıtım (scripts/)', 
                 detay: 'macOS (sh) ve Windows (ps1) derleme betikleri, paketleme otomasyonları, CI/CD süreçleri ve changelog yönetimi.',
-                term: 'hilal-browser-build-release-pipeline'
+                term: 'hilal-browser-build-release-pipeline',
+                color: '#4caf50' // Yeşil
             },
             'issues': {
                 baslik: '🐛 Sorunlar & Hatalar',
                 detay: 'Hilal Browser derleme süreçlerinde, yamaların uygulanmasında veya tarayıcı çalışma zamanında karşılaştığınız bug/hata bildirimleri.',
-                term: 'hilal-browser-community-issues'
+                term: 'hilal-browser-community-issues',
+                color: '#f44336' // Hata Kırmızısı
             },
             'suggestions': {
                 baslik: '💡 Öneriler & Fikirler',
                 detay: 'Tarayıcıya eklenmesini istediğiniz yeni özellikler, yama yönetim aracı (hil) için iyileştirmeler ve inovatif fikir havuzu.',
-                term: 'hilal-browser-community-suggestions'
+                term: 'hilal-browser-community-suggestions',
+                color: '#ffeb3b' // Fikir Sarısı
             }
         };
 
         if(!kategoriBilgileri[aktifKategori]) aktifKategori = 'patch-manager';
 
-        document.getElementById('kategoriBaslik').innerText = kategoriBilgileri[aktifKategori].baslik;
-        document.getElementById('kategoriDetay').innerText = kategoriBilgileri[aktifKategori].detay;
+        const data = kategoriBilgileri[aktifKategori];
+
+        // CSS Variables güncellemesi ile temayı dinamik olarak kategoriye uyduruyoruz
+        document.documentElement.style.setProperty('--accent-color', data.color);
+
+        document.getElementById('kategoriBaslik').innerText = data.baslik;
+        document.getElementById('kategoriDetay').innerText = data.detay;
         document.getElementById(`cat-${aktifKategori}`).classList.add('active');
 
-        // Eski giscus yüklemesini temizle
+        // Giscus Kutusu ve Animasyon Tetikleyici
         const giscusKutusu = document.getElementById('giscus-forum-kutusu');
         giscusKutusu.innerHTML = '';
+        giscusKutusu.classList.add('loading');
 
-        // Yeni dinamik Giscus script bileşeni
         const script = document.createElement('script');
         script.src = "https://giscus.app/client.js";
         
         script.setAttribute("data-repo", "Sxinar/hilal-browser");
         script.setAttribute("data-repo-id", "R_kgDOSxZJ7g");
         script.setAttribute("data-category-id", "DIC_kwDOSxZJ7s4C_GO8");
-        
         script.setAttribute("data-mapping", "specific");
-        script.setAttribute("data-term", kategoriBilgileri[aktifKategori].term); 
-        
+        script.setAttribute("data-term", data.term); 
         script.setAttribute("data-strict", "0");
         script.setAttribute("data-reactions-enabled", "1");
         script.setAttribute("data-emit-metadata", "0");
@@ -245,6 +362,10 @@
         script.setAttribute("data-lang", "tr");
         script.crossOrigin = "anonymous";
         script.async = true;
+
+        script.onload = () => {
+            giscusKutusu.classList.remove('loading');
+        };
 
         giscusKutusu.appendChild(script);
     </script>
