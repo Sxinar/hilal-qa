@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <title>Hilal Browser | Geliştirici Tartışma Platformu</title>
+    <title>Hilal Browser | Developer Arena</title>
     <link rel="icon" type="image/png" href="https://hilal.gkdevstudio.org/default128.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Tailwind için özel gölge ve animasyon ayarları (isteğe bağlı)
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        github: {
-                            dark: '#0d1117',
-                            card: '#161b22',
+                        dev: {
+                            bg: '#090d13',
+                            panel: '#0d1117',
+                            surface: '#161b22',
                             border: '#30363d',
                             text: '#c9d1d9',
                             muted: '#8b949e',
-                            title: '#f0f6fc'
+                            white: '#f0f6fc'
                         }
                     }
                 }
@@ -26,168 +26,220 @@
         }
     </script>
     <style>
-        /* Giscus yükleniyor durumu ve dinamik sol çizgi için küçük bir helper */
-        .giscus-loading::after {
-            content: "Tartışmalar yükleniyor...";
-            @apply absolute top-10 left-1/2 -translate-x-1/2 text-github-muted text-sm;
+        /* Giscus yükleniyor animasyonu için minimalist bir spinner */
+        .loader {
+            border: 2px solid #30363d;
+            border-top: 2px solid var(--accent-color, #58a6ff);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
         }
-        /* Dinamik renk geçişlerini CSS variable ile beslemeye devam ediyoruz */
-        :root { --accent-color: #58a6ff; }
-        .dynamic-border { border-color: var(--accent-color); }
-        .dynamic-bg { background-color: var(--accent-color); }
-        .dynamic-shadow-sm { box-shadow: inset 4px 0 0 0 var(--accent-color), 0 4px 12px rgba(0,0,0,0.1); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-github-dark text-github-text antialiased selection:bg-blue-500/30 max-w-[1200px] mx-auto px-5 py-10 tracking-tight">
+<body class="bg-dev-bg text-dev-text antialiased max-w-[1250px] mx-auto px-6 py-8 tracking-tight font-mono">
 
-    <header class="flex justify-between items-center border-b border-github-border pb-6 mb-8">
-        <h1 class="text-github-title text-xl font-semibold flex items-center gap-3.5">
-            <img src="https://hilal.gkdevstudio.org/default128.png" alt="Hilal Browser Logo" class="w-8 h-8 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
-            Hilal Browser Geliştirici Alanı
-        </h1>
+    <header class="flex items-center justify-between border-b border-dev-border pb-5 mb-8">
+        <div class="flex items-center gap-3">
+            <img src="https://hilal.gkdevstudio.org/default128.png" alt="Logo" class="w-7 h-7 object-contain opacity-90">
+            <span class="text-dev-white text-lg font-semibold tracking-normal font-sans">Hilal Browser / dev-center</span>
+        </div>
+        <div class="text-[11px] text-dev-muted border border-dev-border px-2 py-0.5 rounded bg-dev-panel">
+            v1.0.0-beta
+        </div>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-8 items-start">
+    <div class="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8 items-start">
         
-        <aside class="space-y-7 md:sticky md:top-5">
+        <nav class="space-y-6 md:sticky md:top-6 select-none font-sans">
             <div>
-                <h3 class="text-github-muted text-[11px] font-bold uppercase tracking-wider mb-3">Çalışma Alanları</h3>
-                <div class="space-y-1.5">
-                    <a href="?kategori=patch-manager" class="kategori-link flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium border border-transparent hover:bg-github-card hover:text-github-title hover:translate-x-0.5 transition-all duration-200" id="cat-patch-manager">
-                        <span>🛠️ Yama Yöneticisi</span>
-                        <span class="text-[11px] px-1.5 py-0.5 rounded-full bg-[#21262d] border border-github-border text-github-muted">hil</span>
-                    </a>
-                    <a href="?kategori=upstream-engine" class="kategori-link flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium border border-transparent hover:bg-github-card hover:text-github-title hover:translate-x-0.5 transition-all duration-200" id="cat-upstream-engine">
-                        <span>🔥 Firefox Tabanı</span>
-                        <span class="text-[11px] px-1.5 py-0.5 rounded-full bg-[#21262d] border border-github-border text-github-muted">core</span>
-                    </a>
-                    <a href="?kategori=changes-overlays" class="kategori-link flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium border border-transparent hover:bg-github-card hover:text-github-title hover:translate-x-0.5 transition-all duration-200" id="cat-changes-overlays">
-                        <span>💎 Değişiklikler & Katmanlar</span>
-                        <span class="text-[11px] px-1.5 py-0.5 rounded-full bg-[#21262d] border border-github-border text-github-muted">src</span>
-                    </a>
-                    <a href="?kategori=build-release" class="kategori-link flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium border border-transparent hover:bg-github-card hover:text-github-title hover:translate-x-0.5 transition-all duration-200" id="cat-build-release">
-                        <span>🚀 Derleme & Dağıtım</span>
-                        <span class="text-[11px] px-1.5 py-0.5 rounded-full bg-[#21262d] border border-github-border text-github-muted">ci</span>
-                    </a>
-                </div>
+                <div class="text-[11px] font-bold text-dev-muted uppercase tracking-wider px-3 mb-2">Workspace</div>
+                <div class="space-y-0.5" id="workspace-menu">
+                    </div>
             </div>
             
             <div>
-                <h3 class="text-github-muted text-[11px] font-bold uppercase tracking-wider mb-3">Topluluk & Geribildirim</h3>
-                <div class="space-y-1.5">
-                    <a href="?kategori=issues" class="kategori-link flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium border border-transparent hover:bg-github-card hover:text-github-title hover:translate-x-0.5 transition-all duration-200" id="cat-issues">
-                        <span>🐛 Sorunlar & Hatalar</span>
-                    </a>
-                    <a href="?kategori=suggestions" class="kategori-link flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium border border-transparent hover:bg-github-card hover:text-github-title hover:translate-x-0.5 transition-all duration-200" id="cat-suggestions">
-                        <span>💡 Öneriler & Fikirler</span>
-                    </a>
+                <div class="text-[11px] font-bold text-dev-muted uppercase tracking-wider px-3 mb-2">Feedback</div>
+                <div class="space-y-0.5" id="feedback-menu">
+                    </div>
+            </div>
+        </nav>
+
+        <main class="bg-dev-panel border border-dev-border rounded-lg shadow-xl relative min-w-0 transition-all duration-200">
+            <div id="accent-line" class="absolute left-0 top-0 bottom-0 w-[3px] transition-colors duration-300"></div>
+
+            <div class="p-6 md:p-8">
+                <div class="border-b border-dev-border pb-6 mb-6">
+                    <h2 id="kategoriBaslik" class="text-dev-white text-xl font-medium mb-1.5 font-sans tracking-normal"></h2>
+                    <p id="kategoriDetay" class="text-dev-muted text-xs leading-relaxed max-w-3xl font-sans"></p>
+                </div>
+
+                <div id="giscus-wrapper" class="relative min-h-[350px]">
+                    <div id="giscus-loading-indicator" class="absolute inset-0 flex flex-col items-center justify-center bg-dev-panel gap-3 text-xs text-dev-muted font-sans z-10">
+                        <div class="loader"></div>
+                        <span>syncing discussions...</span>
+                    </div>
+                    <div id="giscus-forum-kutusu"></div>
                 </div>
             </div>
-        </aside>
-
-        <main class="bg-github-card border border-github-border rounded-xl p-5 md:p-8 shadow-2xl relative overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-[3px] dynamic-bg transition-colors duration-300"></div>
-
-            <div class="border-b border-github-border pb-6 mb-7 pt-2">
-                <h2 id="kategoriBaslik" class="m-0 mb-2 text-github-title text-2xl font-semibold tracking-tight flex items-center gap-2.5">
-                    Yama Yöneticisi (hil)
-                </h2>
-                <p id="kategoriDetay" class="m-0 text-github-muted text-sm leading-relaxed">
-                    Rust ile geliştirilen patch yöneticisinin mimarisi, manifest.toml kuralları ve core operations (setup, apply, refresh) süreçleri.
-                </p>
-            </div>
-
-            <div id="giscus-forum-kutusu" class="min-height-[300px] relative"></div>
         </main>
 
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        let aktifKategori = urlParams.get('kategori') || 'patch-manager';
-
+        // Kategori Veri Kümesi (Düz renkler, temiz metinler)
         const kategoriBilgileri = {
             'patch-manager': { 
-                baslik: '🛠️ Yama Yöneticisi (hil)', 
-                detay: 'Rust ile geliştirilen patch yöneticisinin mimarisi, manifest.toml kuralları ve core operations (setup, apply, refresh) süreçleri.',
+                baslik: 'Yama Yöneticisi', 
+                badge: 'hil',
+                group: 'workspace',
+                detay: 'Rust tabanlı patch yöneticisi mimarisi, manifest.toml validasyon kuralları ve core operations (setup, apply, refresh) süreçleri.',
                 term: 'hilal-browser-patch-manager-hil',
-                color: '#f97316' // Tailwind orange-500
+                color: '#38bdf8' // Sky 400
             },
             'upstream-engine': { 
-                baslik: '🔥 Firefox Tabanı (engine)', 
-                detay: 'Upstream Firefox kod tabanı, upstream.lock kilit mekanizmaları, mach komutları ve yerel motor optimizasyonları.',
+                baslik: 'Firefox Tabanı', 
+                badge: 'core',
+                group: 'workspace',
+                detay: 'Upstream Firefox kod tabanı senkronizasyonu, upstream.lock kilit mekanizmaları, mach komut dizilimleri ve motor optimizasyonları.',
                 term: 'hilal-browser-upstream-engine-firefox',
-                color: '#ea580c' // Tailwind orange-600 (Firefox vibe)
+                color: '#f97316' // Orange 500
             },
             'changes-overlays': { 
-                baslik: '💎 Değişiklikler & Katmanlar (changes/)', 
-                detay: 'Firefox kaynak ağacını aynalayan *.patch dosyaları, özelleştirilmiş branding, yerelleştirme (locales) ve kullanıcı tercihleri (preferences).',
+                baslik: 'Değişiklikler & Katmanlar', 
+                badge: 'changes/',
+                group: 'workspace',
+                detay: 'Firefox kaynak ağacını aynalayan *.patch entegrasyonları, özelleştirilmiş branding yapılandırması ve kullanıcı tercihleri.',
                 term: 'hilal-browser-changes-overlays',
-                color: '#06b6d4' // Tailwind cyan-500
+                color: '#a855f7' // Purple 500
             },
             'build-release': { 
-                baslik: '🚀 Derleme & Dağıtım (scripts/)', 
-                detay: 'macOS (sh) ve Windows (ps1) derleme betikleri, paketleme otomasyonları, CI/CD süreçleri ve changelog yönetimi.',
+                baslik: 'Derleme & Dağıtım', 
+                badge: 'scripts/',
+                group: 'workspace',
+                detay: 'macOS (sh) ve Windows (ps1) derleme mimarileri, paketleme otomasyonları, CI/CD süreçleri ve sürüm yönetimi.',
                 term: 'hilal-browser-build-release-pipeline',
-                color: '#22c55e' // Tailwind green-500
+                color: '#22c55e' // Green 500
             },
             'issues': {
-                baslik: '🐛 Sorunlar & Hatalar',
-                detay: 'Hilal Browser derleme süreçlerinde, yamaların uygulanmasında veya tarayıcı çalışma zamanında karşılaştığınız bug/hata bildirimleri.',
+                baslik: 'Sorunlar & Hatalar',
+                badge: 'bug',
+                group: 'feedback',
+                detay: 'Derleme süreçlerinde, yamaların enjeksiyonunda veya runtime esnasında karşılaşılan hata ve istisnaların takibi.',
                 term: 'hilal-browser-community-issues',
-                color: '#ef4444' // Tailwind red-500
+                color: '#ef4444' // Red 500
             },
             'suggestions': {
-                baslik: '💡 Öneriler & Fikirler',
-                detay: 'Tarayıcıya eklenmesini istediğiniz yeni özellikler, yama yönetim aracı (hil) için iyileştirmeler ve inovatif fikir havuzu.',
+                baslik: 'Öneriler & Fikirler',
+                badge: 'feature',
+                group: 'feedback',
+                detay: 'Tarayıcı kabiliyetlerini artıracak yeni özellik önerileri ve yama yönetim motoruna dair optimizasyon fikirleri.',
                 term: 'hilal-browser-community-suggestions',
-                color: '#eab308' // Tailwind yellow-500
+                color: '#eab308' // Yellow 500
             }
         };
 
-        if(!kategoriBilgileri[aktifKategori]) aktifKategori = 'patch-manager';
+        // DOM Elementleri
+        const workspaceMenu = document.getElementById('workspace-menu');
+        const feedbackMenu = document.getElementById('feedback-menu');
+        const accentLine = document.getElementById('accent-line');
+        const loadingIndicator = document.getElementById('giscus-loading-indicator');
 
-        const data = kategoriBilgileri[aktifKategori];
+        // Menüyü Dinamik Oluşturma
+        function menuRender() {
+            workspaceMenu.innerHTML = '';
+            feedbackMenu.innerHTML = '';
+            
+            Object.keys(kategoriBilgileri).forEach(key => {
+                const item = kategoriBilgileri[key];
+                const link = document.createElement('a');
+                link.href = `?kategori=${key}`;
+                link.className = `group flex items-center justify-between px-3 py-2 rounded text-xs transition-all duration-150 cursor-pointer text-dev-muted hover:bg-dev-surface hover:text-dev-white`;
+                link.id = `link-${key}`;
+                
+                // SPA Tıklama Etkinliği
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.history.pushState(null, '', link.href);
+                    switchCategory(key);
+                });
 
-        // Dinamik renkleri CSS Variable üzerinden Tailwind'e paslıyoruz
-        document.documentElement.style.setProperty('--accent-color', data.color);
+                let badgeHtml = item.badge ? `<span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-dev-surface border border-dev-border group-hover:border-dev-muted text-dev-muted transition-colors">${item.badge}</span>` : '';
+                link.innerHTML = `<span>${item.baslik}</span>${badgeHtml}`;
 
-        document.getElementById('kategoriBaslik').innerText = data.baslik;
-        document.getElementById('kategoriDetay').innerText = data.detay;
-        
-        // Aktif menü elementini bul ve Tailwind sınıflarını dinamik ekle
-        const aktifElement = document.getElementById(`cat-${aktifKategori}`);
-        if(aktifElement) {
-            aktifElement.classList.add('bg-github-card', 'text-github-title', 'border-github-border', 'dynamic-shadow-sm', 'font-semibold');
+                if (item.group === 'workspace') workspaceMenu.appendChild(link);
+                else feedbackMenu.appendChild(link);
+            });
         }
 
-        // Giscus Script Injector
-        const giscusKutusu = document.getElementById('giscus-forum-kutusu');
-        giscusKutusu.innerHTML = '';
-        giscusKutusu.classList.add('giscus-loading');
+        // Kategori Değiştirme Fonksiyonu (F5 ATMAYA GEREK KALMADAN ÇALIŞAN ALAN)
+        function switchCategory(kategoriKey) {
+            let key = kategoriBilgileri[kategoriKey] ? kategoriKey : 'patch-manager';
+            const data = kategoriBilgileri[key];
 
-        const script = document.createElement('script');
-        script.src = "https://giscus.app/client.js";
-        
-        script.setAttribute("data-repo", "Sxinar/hilal-browser");
-        script.setAttribute("data-repo-id", "R_kgDOSxZJ7g");
-        script.setAttribute("data-category-id", "DIC_kwDOSxZJ7s4C_GO8");
-        script.setAttribute("data-mapping", "specific");
-        script.setAttribute("data-term", data.term); 
-        script.setAttribute("data-strict", "0");
-        script.setAttribute("data-reactions-enabled", "1");
-        script.setAttribute("data-emit-metadata", "0");
-        script.setAttribute("data-input-position", "top");
-        script.setAttribute("data-theme", "dark_dimmed");
-        script.setAttribute("data-lang", "tr");
-        script.crossOrigin = "anonymous";
-        script.async = true;
+            // Aktif Sınıfları Temizle ve Yeni Olana Ekle
+            document.querySelectorAll('nav a').forEach(el => {
+                el.classList.remove('bg-dev-surface', 'text-dev-white', 'font-medium', 'border-l-2');
+                el.style.borderLeftColor = 'transparent';
+            });
+            
+            const activeLink = document.getElementById(`link-${key}`);
+            if(activeLink) {
+                activeLink.classList.add('bg-dev-surface', 'text-dev-white', 'font-medium');
+                activeLink.style.borderLeft = `2px solid ${data.color}`;
+            }
 
-        script.onload = () => {
-            giscusKutusu.classList.remove('giscus-loading');
-        };
+            // Arayüzü Güncelle
+            document.getElementById('kategoriBaslik').innerText = data.baslik;
+            document.getElementById('kategoriDetay').innerText = data.detay;
+            accentLine.style.backgroundColor = data.color;
+            document.documentElement.style.setProperty('--accent-color', data.color);
 
-        giscusKutusu.appendChild(script);
+            // Giscus'ı Yeniden Yükle (DOM patlamadan güvenli güncelleme)
+            reloadGiscus(data.term);
+        }
+
+        // Giscus Güncelleyici (SPA Uyumlu)
+        function reloadGiscus(term) {
+            const container = document.getElementById('giscus-forum-kutusu');
+            container.innerHTML = '';
+            loadingIndicator.style.display = 'flex';
+
+            const script = document.createElement('script');
+            script.src = "https://giscus.app/client.js";
+            script.setAttribute("data-repo", "Sxinar/hilal-browser");
+            script.setAttribute("data-repo-id", "R_kgDOSxZJ7g");
+            script.setAttribute("data-category-id", "DIC_kwDOSxZJ7s4C_GO8");
+            script.setAttribute("data-mapping", "specific");
+            script.setAttribute("data-term", term); 
+            script.setAttribute("data-strict", "0");
+            script.setAttribute("data-reactions-enabled", "1");
+            script.setAttribute("data-emit-metadata", "0");
+            script.setAttribute("data-input-position", "top");
+            script.setAttribute("data-theme", "dark_dimmed");
+            script.setAttribute("data-lang", "tr");
+            script.crossOrigin = "anonymous";
+            script.async = true;
+
+            script.onload = () => {
+                // Iframe'in tam yüklenmesini beklemek için hafif bir delay
+                setTimeout(() => { loadingIndicator.style.display = 'none'; }, 400);
+            };
+
+            container.appendChild(script);
+        }
+
+        // Tarayıcı Geri/İleri Buton Desteği (Popstate)
+        window.addEventListener('popstate', () => {
+            const params = new URLSearchParams(window.location.search);
+            switchCategory(params.get('kategori'));
+        });
+
+        // İlk Yükleme Hatları
+        menuRender();
+        const initialParams = new URLSearchParams(window.location.search);
+        switchCategory(initialParams.get('kategori'));
     </script>
 </body>
 </html>
