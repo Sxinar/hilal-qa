@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Hilal Browser | Geliştirici Tartışma Platformu</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #22272e;
+            color: #adbac7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444c56;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        
+        h1 { 
+            color: #f0f6fc; 
+            margin: 0; 
+            font-size: 24px; 
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h1::before {
+            content: "🌙";
+            font-size: 22px;
+        }
+
+        .forum-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: #1c2128;
+            border: 1px solid #444c56;
+            border-radius: 6px;
+            padding: 15px;
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            color: #768390;
+            font-size: 11px;
+            margin-top: 0;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .kategori-link {
+            display: block;
+            color: #539bf5;
+            text-decoration: none;
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.2s ease;
+        }
+        
+        .kategori-link:hover, .kategori-link.active {
+            background-color: #22272e;
+            color: #f0f6fc;
+        }
+
+        .main-content {
+            background: #1c2128;
+            border: 1px solid #444c56;
+            border-radius: 6px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 0;
+        }
+
+        .forum-header-info {
+            border-bottom: 1px solid #444c56;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .forum-header-info h2 { 
+            margin: 0 0 8px 0; 
+            color: #f0f6fc; 
+            font-size: 20px; 
+        }
+        
+        .forum-header-info p { 
+            margin: 0; 
+            color: #768390; 
+            font-size: 14px; 
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            .forum-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .sidebar {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                padding: 10px;
+            }
+            .sidebar h3 {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            .kategori-link {
+                display: inline-block;
+                margin-bottom: 0;
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+            .main-content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Hilal Browser Geliştirici Alanı</h1>
+    </header>
+
+    <div class="forum-container">
+        
+        <aside class="sidebar">
+            <h3>Çalışma Alanları (Workspace)</h3>
+            <a href="?kategori=patch-manager" class="kategori-link" id="cat-patch-manager">Yama Yöneticisi (hil)</a>
+            <a href="?kategori=upstream-engine" class="kategori-link" id="cat-upstream-engine">Firefox Tabanı (engine)</a>
+            <a href="?kategori=changes-overlays" class="kategori-link" id="cat-changes-overlays">Değişiklikler & Katmanlar</a>
+            <a href="?kategori=build-release" class="kategori-link" id="cat-build-release">Derleme & Dağıtım</a>
+        </aside>
+
+        <main class="main-content">
+            <div class="forum-header-info">
+                <h2 id="kategoriBaslik">Yama Yöneticisi (hil)</h2>
+                <p id="kategoriDetay">Rust ile geliştirilen patch yöneticisinin mimarisi, manifest.toml kuralları ve core operations (setup, apply, refresh) süreçleri.</p>
+            </div>
+
+            <div id="giscus-forum-kutusu"></div>
+        </main>
+
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let aktifKategori = urlParams.get('kategori') || 'patch-manager';
+
+        const kategoriBilgileri = {
+            'patch-manager': { 
+                baslik: 'Yama Yöneticisi (hil)', 
+                detay: 'Rust ile geliştirilen patch yöneticisinin mimarisi, manifest.toml kuralları ve core operations (setup, apply, refresh) süreçleri.',
+                term: 'hilal-browser-patch-manager-hil'
+            },
+            'upstream-engine': { 
+                baslik: 'Firefox Tabanı (engine)', 
+                detay: 'Upstream Firefox kod tabanı, upstream.lock kilit mekanizmaları, mach komutları ve yerel motor optimizasyonları.',
+                term: 'hilal-browser-upstream-engine-firefox'
+            },
+            'changes-overlays': { 
+                baslik: 'Değişiklikler & Katmanlar (changes/)', 
+                detay: 'Firefox kaynak ağacını aynalayan *.patch dosyaları, özelleştirilmiş branding, yerelleştirme (locales) ve kullanıcı tercihleri (preferences).',
+                term: 'hilal-browser-changes-overlays'
+            },
+            'build-release': { 
+                baslik: 'Derleme & Dağıtım (scripts/)', 
+                detay: 'macOS (sh) ve Windows (ps1) derleme betikleri, paketleme otomasyonları, CI/CD süreçleri ve changelog yönetimi.',
+                term: 'hilal-browser-build-release-pipeline'
+            }
+        };
+
+        if(!kategoriBilgileri[aktifKategori]) aktifKategori = 'patch-manager';
+
+        document.getElementById('kategoriBaslik').innerText = kategoriBilgileri[aktifKategori].baslik;
+        document.getElementById('kategoriDetay').innerText = kategoriBilgileri[aktifKategori].detay;
+        document.getElementById(`cat-${aktifKategori}`).classList.add('active');
+
+        // Eski giscus yüklemesini sıfırla
+        const giscusKutusu = document.getElementById('giscus-forum-kutusu');
+        giscusKutusu.innerHTML = '';
+
+        // Yeni dinamik Giscus script elementini oluştur
+        const script = document.createElement('script');
+        script.src = "https://giscus.app/client.js";
+        
+        // Gönderdiğin güncel repo ve kategori ID bilgileri uygulandı
+        script.setAttribute("data-repo", "Sxinar/hilal-browser");
+        script.setAttribute("data-repo-id", "R_kgDOSxZJ7g");
+        script.setAttribute("data-category-id", "DIC_kwDOSxZJ7s4C_GO8");
+        
+        // Çakışmayı önlemek için her çalışma alanına tamamen benzersiz anahtarlar atandı
+        script.setAttribute("data-mapping", "specific");
+        script.setAttribute("data-term", kategoriBilgileri[aktifKategori].term); 
+        
+        script.setAttribute("data-strict", "0");
+        script.setAttribute("data-reactions-enabled", "1");
+        script.setAttribute("data-emit-metadata", "0");
+        script.setAttribute("data-input-position", "top"); // Girdi kutusu üstte olacak şekilde ayarlandı
+        script.setAttribute("data-theme", "dark_dimmed");   // Arayüzle uyumlu GitHub koyu teması
+        script.setAttribute("data-lang", "tr");
+        script.crossOrigin = "anonymous";
+        script.async = true;
+
+        giscusKutusu.appendChild(script);
+    </script>
+</body>
+</html>
